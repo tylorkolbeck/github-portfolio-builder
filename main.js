@@ -6,6 +6,10 @@ const fs = require("fs");
 // add a file named ghport.md to your repo that is formatted with
 // basic html and that is wht your post will show up as when link with your website
 
+// FUTURE: Implement the userauth API to allow editing posts right on your website
+
+// Make aware of environment client | node
+
 class GhPort {
   constructor(gh_userName) {
     this.gh_userName = gh_userName;
@@ -33,7 +37,7 @@ class GhPort {
       headers: {
         // to return topics
         Accept:
-          "application/vnd.github.mercy-preview+json+raw, application/vnd.github.v3.html"
+          "application/vnd.github.mercy-preview+json+raw, application/vnd.github.v3.raw"
       }
     })
       .then(res => {
@@ -60,6 +64,15 @@ class GhPort {
         }
       });
     });
+  }
+
+  __getGhPortFileContents(repoName) {
+    let queryParam = `${this.baseURL}/repos/${this.gh_userName}/${repoName}/contents/ghport.md`;
+    fetch(queryParam, {
+      headers: {
+        Accept: "application/vnd.github.v3.raw"
+      }
+    }).then(res => console.log(res));
   }
 
   __buildQueryString(sort, direction) {
@@ -110,3 +123,5 @@ userGhPort
 //   )
 // )
 // .catch(err => console.log(err));
+
+userGhPort.__getGhPortFileContents("github-portfolio-builder");
