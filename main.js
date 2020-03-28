@@ -21,16 +21,12 @@ class GhPort {
    * @param {bool} formatted
    * If true then return only data needed to
    * make cards, else return the entire raw response
-   * Default: false
+   * Default: true
    */
-  getAllRepos(sort, direction, formatted = true) {
-    let queryString = `
-    ${this.baseURL}/users/${this.gh_userName}/repos${
-      sort ? `?sort=${sort}&` : `?sort=created&`
-    }${direction ? `direction=${direction}` : `direction=desc`}`;
-
-    return fetch(queryString, {
+  getAllRepos(sort = "created", direction = "desc", formatted = true) {
+    return fetch(this.__buildQueryString(sort, direction), {
       headers: {
+        // to return topics
         Accept: "application/vnd.github.mercy-preview+json"
       }
     })
@@ -48,7 +44,19 @@ class GhPort {
       .catch(err => err.message);
   }
 
-  getMarkedRepos() {}
+  getMarkedRepos() {
+    return this.getAllRepos().then(res => {
+      return res.filter(repo => {
+        return repo.topics.includes("ghport");
+      });
+    });
+  }
+
+  __buildQueryString(sort, direction) {
+    return `${this.baseURL}/users/${this.gh_userName}/repos${
+      sort ? `?sort=${sort}&` : `?sort=created&`
+    }${direction ? `direction=${direction}` : `direction=desc`}`;
+  }
 
   __formatRawRepoList(reposRaw) {
     return reposRaw.map(repo => {
@@ -63,20 +71,32 @@ class GhPort {
         created: repo.created_at,
         update: repo.updated_at,
         hasPages: repo.has_pages,
-        hasIssues: repo.has_issues
+        hasIssues: repo.has_issues,
+        topics: repo.topics
       };
     });
   }
 }
 
-let userGH = new GhPort("tylorkolbeck");
+let userGhPort = new GhPort("tylorkolbeck");
 
-userGH
+/**
+ * @returns {array} of all repos
+ */
+userGhPort
   // getAllRepos([filter[, order[, formatted]]])
-  .getAllRepos("created", null, false)
-  .then(res =>
-    fs.writeFile("reposFormatted.json", JSON.stringify(res, null, " "), err =>
-      console.log(err)
-    )
-  )
-  .catch(err => console.log(err));
+  .getAllRepos();
+
+/**
+ * @returns {array} of repos marked with the topic ghport
+ */
+userGhPort
+  // getMarkedRepos([filter[, order[, formatted]]])
+  .getMarkedRepos();
+
+// .then(res =>
+//   fs.writeFile("reposFormatted.json", JSON.stringify(res, null, " "), err =>
+//     console.log(err)
+//   )
+// )
+// .catch(err => console.log(err));
