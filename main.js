@@ -1,6 +1,11 @@
 const fetch = require("node-fetch");
 const fs = require("fs");
 
+// Notes
+// Description: Auto integrate with your github account.
+// add a file named ghport.md to your repo that is formatted with
+// basic html and that is wht your post will show up as when link with your website
+
 class GhPort {
   constructor(gh_userName) {
     this.gh_userName = gh_userName;
