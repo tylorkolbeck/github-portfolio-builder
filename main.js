@@ -27,7 +27,8 @@ class GhPort {
     return fetch(this.__buildQueryString(sort, direction), {
       headers: {
         // to return topics
-        Accept: "application/vnd.github.mercy-preview+json"
+        Accept:
+          "application/vnd.github.mercy-preview+json+raw, application/vnd.github.v3.html"
       }
     })
       .then(res => {
@@ -47,7 +48,11 @@ class GhPort {
   getMarkedRepos() {
     return this.getAllRepos().then(res => {
       return res.filter(repo => {
-        return repo.topics.includes("ghport");
+        if (res.length > 0) {
+          return repo.topics.includes("ghport");
+        } else {
+          return null;
+        }
       });
     });
   }
