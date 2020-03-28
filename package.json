@@ -1,0 +1,23 @@
+{
+  "name": "github-portfolio-builder",
+  "version": "1.0.0",
+  "description": "This project is designed to get a users github repositories that are marked with a \"\\*\" in the description and then build cards to display on their website. What to display on the website will be formatted in markdown in a .gh-portfolio.md file in the repo.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tylorkolbeck/github-portfolio-builder.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tylorkolbeck/github-portfolio-builder/issues"
+  },
+  "homepage": "https://github.com/tylorkolbeck/github-portfolio-builder#readme",
+  "dependencies": {
+    "node-fetch": "^2.6.0"
+  }
+}
