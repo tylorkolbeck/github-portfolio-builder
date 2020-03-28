@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+const fs = require("fs");
 
 class GhPort {
   constructor(gh_userName) {
@@ -6,41 +7,76 @@ class GhPort {
   }
 
   baseURL = "https://api.github.com";
-  user_repos = [];
 
-  getAllRepos(callback) {
-    fetch(`${this.baseURL}/users/${this.gh_userName}/repos`)
+  /**
+   *
+   * @param {string} sort
+   * sort the returned repos by create | pushed | updated
+   * Default: created
+   *
+   * @param {string} direction
+   * asc | desc
+   * Default: desc
+   *
+   * @param {bool} formatted
+   * If true then return only data needed to
+   * make cards, else return the entire raw response
+   * Default: false
+   */
+  getAllRepos(sort, direction, formatted = true) {
+    let queryString = `
+    ${this.baseURL}/users/${this.gh_userName}/repos${
+      sort ? `?sort=${sort}&` : `?sort=created&`
+    }${direction ? `direction=${direction}` : `direction=desc`}`;
+
+    return fetch(queryString, {
+      headers: {
+        Accept: "application/vnd.github.mercy-preview+json"
+      }
+    })
       .then(res => {
-        res.json().then(res => {
-          this.__buildRepoList(res);
-          callback(this.user_repos, null);
+        return res.json().then(res => {
+          if (res.length > 0 && formatted) {
+            return this.__formatRawRepoList(res);
+          } else if (res.length && !formatted) {
+            return res;
+          } else {
+            return null;
+          }
         });
       })
-      .catch(err => callback(null, err.message));
+      .catch(err => err.message);
   }
 
-  __buildRepoList(reposRaw) {
-    reposRaw.forEach(repo => {
-      this.user_repos.push({
+  getMarkedRepos() {}
+
+  __formatRawRepoList(reposRaw) {
+    return reposRaw.map(repo => {
+      return {
         id: repo.id,
         name: repo.name,
         url: repo.owner.html_url,
         description: repo.description,
         commits: 0,
-        ssh: repo.ssh_url,
-        stars: repo.stargazers_count
-      });
+        sshUrl: repo.ssh_url,
+        stars: repo.stargazers_count,
+        created: repo.created_at,
+        update: repo.updated_at,
+        hasPages: repo.has_pages,
+        hasIssues: repo.has_issues
+      };
     });
   }
 }
 
-let tylor = new GhPort("tylorkolbeck");
-tylor.getAllRepos(logResponse);
+let userGH = new GhPort("tylorkolbeck");
 
-function logResponse(res, err) {
-  if (!err) {
-    console.log(res);
-  } else {
-    console.log(err);
-  }
-}
+userGH
+  // getAllRepos([filter[, order[, formatted]]])
+  .getAllRepos("created", null, false)
+  .then(res =>
+    fs.writeFile("reposFormatted.json", JSON.stringify(res, null, " "), err =>
+      console.log(err)
+    )
+  )
+  .catch(err => console.log(err));
