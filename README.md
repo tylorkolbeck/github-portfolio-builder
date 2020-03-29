@@ -1,6 +1,6 @@
 # GitHub Portfolio Builder
 
-Tylor Kolbeck | 26 March, 2020 | 1.0.0
+Tylor Kolbeck | 26 March, 2020 | 1.0.0-beta
 
 ## THIS IS STILL A WORK IN PROGRESS
 
