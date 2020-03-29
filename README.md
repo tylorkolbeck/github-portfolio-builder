@@ -12,7 +12,7 @@ All you need to do is give each repo you wish to include in your portfolio a top
 
 ## Base Class
 
-`GhPort`
+### `GhPort`
 
 Create a GhPort instance by passing it a github username string.
 Optionally pass in an GitHub OAUTH token.
@@ -25,7 +25,7 @@ Note: OAuth tokens should be treated as a password so use caution to not expose 
 
 ### `GhPort.getAllRepos()`
 
-Returns an array of all repos associated with the instance username. Each repo will contain:
+Returns an array of all repos associated with the GhPort instance username. Each repo will contain:
 
 - id - id
 - name - name
@@ -43,14 +43,14 @@ Returns an array of all repos associated with the instance username. Each repo w
 Note:
 `GhPort.getAllRepos()` does not only return ghport marked files or the contents of a ghport.md file if it exists. See `GhPort.buildMarkedRepos()` and `GhPort.getMarkedRepos()` for getting repos that are marked with ghport and that contain a ghport.md file.
 
-_`GhPort.getAllRepos()` may be deprecated in a future release so avoid using it._
+_`GhPort.getAllRepos()` may be deprecated in a future release so avoid using it to avoid misuse._
 
 ---
 
 ### `GhPort.buildMarkedRepos()`
 
 Note:
-Each repo passed to `buildMarkedRepos()` will make an API call which could quickly max out API calls. Only call this method with an array of marked repos. Marked repos will marked with a ghport topic see `getMarkedRepos()`.
+Each repo passed to `buildMarkedRepos()` will make an API call which could quickly max out API calls. Only call this method with an array of marked repos. Marked repos will contain a ghport topic see `getMarkedRepos()`.
 
 TODO:
 
