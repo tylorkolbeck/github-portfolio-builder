@@ -1,21 +1,22 @@
 const fetch = require("node-fetch");
 const fs = require("fs");
+require("dotenv").config();
 
-// Notes
-// Description: Auto integrate with your github account.
-// add a file named ghport.md to your repo that is formatted with
-// basic html and that is wht your post will show up as when link with your website
+let USER_TOKEN = process.env.USER_TOKEN;
+let USER_NAME = process.env.USER_NAME;
 
 // FUTURE: Implement the userauth API to allow editing posts right on your website
 
 // Make aware of environment client | node
 
 class GhPort {
-  constructor(gh_userName) {
+  constructor(gh_userName, userToken = "") {
     this.gh_userName = gh_userName;
+    this.user_token = userToken;
   }
 
   baseURL = "https://api.github.com";
+  apiCalls = 0;
 
   /**
    *
@@ -33,6 +34,7 @@ class GhPort {
    * Default: true
    */
   getAllRepos(sort = "created", direction = "desc", formatted = true) {
+    this.apiCalls++;
     return fetch(this.__buildQueryString(sort, direction), {
       headers: {
         // to return topics
@@ -54,16 +56,43 @@ class GhPort {
       .catch(err => err.message);
   }
 
-  getMarkedRepos() {
-    return this.getAllRepos().then(res => {
-      return res.filter(repo => {
-        if (res.length > 0) {
-          return repo.topics.includes("ghport");
-        } else {
-          return null;
-        }
-      });
+  /**
+   * Get and return all ghport repos with the ghport.md
+   * contents.
+   */
+  async ghRepos() {
+    let allRepos = await this.getAllRepos();
+    let markedRepos = await this.getMarkedRepos(allRepos);
+    this.apiCalls += markedRepos.length;
+
+    let reposContentPromises = markedRepos.map(async repo => {
+      let content = await this.__getGhFileContents(repo.name);
+
+      return {
+        ...repo,
+        content: content
+      };
     });
+
+    let finalRepos = await Promise.all(reposContentPromises);
+
+    return finalRepos;
+  }
+
+  getMarkedRepos(repos) {
+    let marked_repos = repos.filter(repo => {
+      return repo.topics.includes("ghport");
+    });
+
+    return marked_repos;
+  }
+
+  __getGhFileContents(repoName) {
+    return this.__getGhPortFileContents(repoName)
+      .then(data => {
+        return data;
+      })
+      .catch(err => console.log(err));
   }
 
   __getGhPortFileContents(repoName) {
@@ -77,12 +106,8 @@ class GhPort {
       .then(res => {
         return res
           .text()
-          .then(data => {
-            return data;
-          })
-          .catch(err => {
-            return err;
-          });
+          .then(data => data)
+          .catch(err => err);
       })
       .catch(err => console.log(err));
   }
@@ -104,7 +129,7 @@ class GhPort {
         sshUrl: repo.ssh_url,
         stars: repo.stargazers_count,
         created: repo.created_at,
-        update: repo.updated_at,
+        updated: repo.updated_at,
         hasPages: repo.has_pages,
         hasIssues: repo.has_issues,
         topics: repo.topics
@@ -125,20 +150,65 @@ userGhPort;
 /**
  * @returns {array} of repos marked with the topic ghport
  */
-userGhPort;
+
+// userGhPort
 // getMarkedRepos([filter[, order[, formatted]]])
 // .getMarkedRepos()
-// .then(res => writeToFile(res));
 
-userGhPort
-  .__getGhPortFileContents("github-portfolio-builder")
-  .then(res => writeToFile(res))
-  .catch(err => writeToFile(err));
+// .then(
+//   res => writeToFile(res)
+// .then(() => console.log("DONE"))
+// .catch(err => console.log(err))
+// )
+// .catch(err => console.log(err));
+
+// userGhPort
+//   .__getGhPortFileContents("github-portfolio-builder")
+//   .then(res =>
+//     writeToFile(res)
+//       .then(() => console.log("DONE"))
+//       .catch(err => console.log(err))
+//   )
+//   .catch(err => console.log(err));
 
 function writeToFile(res) {
   fs.writeFile("reposFormatted.json", JSON.stringify(res, null, " "), err =>
     console.log(err)
-  )
-    .then(() => console.log("DONE"))
-    .catch(err => console.log(err));
+  );
 }
+
+// console.log(process.env.USER_TOKEN);
+
+// async function buildMarkedRepos() {
+//   let allRepos = await userGhPort.getAllRepos();
+//   let markedRepos = await userGhPort.getMarkedRepos(allRepos);
+
+//   let reposContentPromises = markedRepos.map(async repo => {
+//     let content = await getRepoContents(repo.name);
+
+//     return {
+//       ...repo,
+//       content: content
+//     };
+//   });
+
+//   let finalRepos = await Promise.all(reposContentPromises);
+
+//   return finalRepos;
+// }
+
+// buildMarkedRepos().then(repos => console.log(repos));
+
+// function getRepoContents(repoName) {
+//   return userGhPort
+//     .__getGhPortFileContents(repoName)
+//     .then(data => {
+//       return data;
+//     })
+//     .catch(err => console.log(err));
+// }
+
+userGhPort.ghRepos().then(repos => {
+  console.log(repos);
+  console.log("GITHUB API CALLS: ", userGhPort.apiCalls);
+});

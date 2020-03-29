@@ -1,0 +1,12 @@
+GitHub Portfolio Builder
+========================
+By Tylor Kolbeck
+Date: 26 March, 2020
+Revision: 1.0.0
+
+
+=== Methods
+```
+.getAllRepos()
+```
+  Gets all repos that are associated with the username that is passed to the base class ``
