@@ -1,5 +1,5 @@
-// import { GhPort } from "./main.js";
 const GhPort = require("./GhPort");
+const fs = require("fs");
 
 // Create instance of GhPort
 let userGhPort = new GhPort("tylorkolbeck");
@@ -9,6 +9,25 @@ userGhPort.ghRepos().then(repos => {
   console.log(repos);
   console.log("GITHUB API CALLS: ", userGhPort.apiCalls);
 });
+
+/**
+ *
+ * @param {string} filename    Filename to create and write data to
+ * @param {string} data        Data to write to a file
+ * @return {bool}              True if write successful else false
+ *
+ */
+function writeToFile(filename, data) {
+  fs.writeFile(filename, JSON.stringify(data, null, " "), err => {
+    if (err) {
+      console.log(err);
+      return false;
+    } else {
+      console.log("Write Successful");
+      return true;
+    }
+  });
+}
 
 /**
  * @returns {array} of all repos
@@ -40,12 +59,6 @@ userGhPort.ghRepos().then(repos => {
 //       .catch(err => console.log(err))
 //   )
 //   .catch(err => console.log(err));
-
-// function writeToFile(res) {
-//   fs.writeFile("reposFormatted.json", JSON.stringify(res, null, " "), err =>
-//     console.log(err)
-//   );
-// }
 
 // console.log(process.env.USER_TOKEN);
 
