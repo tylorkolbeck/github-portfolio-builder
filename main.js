@@ -68,11 +68,23 @@ class GhPort {
 
   __getGhPortFileContents(repoName) {
     let queryParam = `${this.baseURL}/repos/${this.gh_userName}/${repoName}/contents/ghport.md`;
-    fetch(queryParam, {
+
+    return fetch(queryParam, {
       headers: {
         Accept: "application/vnd.github.v3.raw"
       }
-    }).then(res => console.log(res));
+    })
+      .then(res => {
+        return res
+          .text()
+          .then(data => {
+            return data;
+          })
+          .catch(err => {
+            return err;
+          });
+      })
+      .catch(err => console.log(err));
   }
 
   __buildQueryString(sort, direction) {
@@ -106,22 +118,27 @@ let userGhPort = new GhPort("tylorkolbeck");
 /**
  * @returns {array} of all repos
  */
-userGhPort
-  // getAllRepos([filter[, order[, formatted]]])
-  .getAllRepos();
+userGhPort;
+// getAllRepos([filter[, order[, formatted]]])
+// .getAllRepos();
 
 /**
  * @returns {array} of repos marked with the topic ghport
  */
+userGhPort;
+// getMarkedRepos([filter[, order[, formatted]]])
+// .getMarkedRepos()
+// .then(res => writeToFile(res));
+
 userGhPort
-  // getMarkedRepos([filter[, order[, formatted]]])
-  .getMarkedRepos();
+  .__getGhPortFileContents("github-portfolio-builder")
+  .then(res => writeToFile(res))
+  .catch(err => writeToFile(err));
 
-// .then(res =>
-//   fs.writeFile("reposFormatted.json", JSON.stringify(res, null, " "), err =>
-//     console.log(err)
-//   )
-// )
-// .catch(err => console.log(err));
-
-userGhPort.__getGhPortFileContents("github-portfolio-builder");
+function writeToFile(res) {
+  fs.writeFile("reposFormatted.json", JSON.stringify(res, null, " "), err =>
+    console.log(err)
+  )
+    .then(() => console.log("DONE"))
+    .catch(err => console.log(err));
+}
