@@ -1,5 +1,4 @@
 const fetch = require("node-fetch");
-const fs = require("fs");
 require("dotenv").config();
 
 let USER_TOKEN = process.env.USER_TOKEN;
