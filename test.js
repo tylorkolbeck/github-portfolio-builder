@@ -4,10 +4,13 @@ const fs = require("fs");
 // Create instance of GhPort
 let userGhPort = new GhPort("tylorkolbeck");
 
-// Get
+/**
+ *
+ * @return marked repos which contain their ghport.md file contents
+ */
 userGhPort.ghRepos().then(repos => {
   console.log(repos);
-  console.log("GITHUB API CALLS: ", userGhPort.apiCalls);
+  console.log("GITHUB API CALLS: ", userGhPort.apiCalls); // Show number of API calls used for this method
 });
 
 /**
@@ -30,72 +33,16 @@ function writeToFile(filename, data) {
 }
 
 /**
- * @returns {array} of all repos
+ * @returns {array} of all repos marked or unmarked
+ * getAllRepos([filter[, order[, formatted]]])
  */
-// userGhPort;
-// getAllRepos([filter[, order[, formatted]]])
-// .getAllRepos();
+//  userGhPort.getAllRepos()
+//  .then(repos => console.log(repos))
 
 /**
  * @returns {array} of repos marked with the topic ghport
+ * getMarkedRepos([filter[, order[, formatted]]])
  */
-
-// userGhPort
-// getMarkedRepos([filter[, order[, formatted]]])
 // .getMarkedRepos()
-
-// .then(
-//   res => writeToFile(res)
-// .then(() => console.log("DONE"))
-// .catch(err => console.log(err))
-// )
-// .catch(err => console.log(err));
-
-// userGhPort
-//   .__getGhPortFileContents("github-portfolio-builder")
-//   .then(res =>
-//     writeToFile(res)
-//       .then(() => console.log("DONE"))
-//       .catch(err => console.log(err))
-//   )
-//   .catch(err => console.log(err));
-
-// console.log(process.env.USER_TOKEN);
-
-// async function buildMarkedRepos() {
-//   let allRepos = await userGhPort.getAllRepos();
-//   let markedRepos = await userGhPort.getMarkedRepos(allRepos);
-
-//   let reposContentPromises = markedRepos.map(async repo => {
-//     let content = await getRepoContents(repo.name);
-
-//     return {
-//       ...repo,
-//       content: content
-//     };
-//   });
-
-//   let finalRepos = await Promise.all(reposContentPromises);
-
-//   return finalRepos;
-// }
-
-// buildMarkedRepos().then(repos => console.log(repos));
-
-// function getRepoContents(repoName) {
-//   return userGhPort
-//     .__getGhPortFileContents(repoName)
-//     .then(data => {
-//       return data;
-//     })
-//     .catch(err => console.log(err));
-// }
-
-// Create instance of GhPort
-// let userGhPort = new GhPort("tylorkolbeck");
-
-// // Get
-// userGhPort.ghRepos().then(repos => {
-//   console.log(repos);
-//   console.log("GITHUB API CALLS: ", userGhPort.apiCalls);
-// });
+//  .then(markedRepos => console.log(markedRepos))
+//  .catch(err => console.log(err))
