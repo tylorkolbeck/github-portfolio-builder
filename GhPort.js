@@ -56,8 +56,13 @@ class GhPort {
   }
 
   /**
-   * Get and return all ghport repos with the ghport.md
-   * contents.
+   * This is the safest method to use because it first
+   * gets the marked repos and then the contents of the ghport.md file
+   * for each.
+   *
+   * This may be the only user facing function to avoid excessive API calls
+   *
+   * @return {promise} The marked repos with ghport contents
    */
   async ghRepos() {
     let allRepos = await this.getAllRepos();
@@ -78,6 +83,12 @@ class GhPort {
     return finalRepos;
   }
 
+  /**
+   *
+   * Determine which repos are marked and return those
+   * @param  {array} repos
+   * @return {array}          Array of marked repos(no ghport content)
+   */
   getMarkedRepos(repos) {
     let marked_repos = repos.filter(repo => {
       return repo.topics.includes("ghport");
