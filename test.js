@@ -8,7 +8,7 @@ let userGhPort = new GhPort("tylorkolbeck");
  *
  * @return marked repos which contain their ghport.md file contents
  */
-userGhPort.ghRepos().then(repos => {
+userGhPort.ghPortRepos().then(repos => {
   console.log(repos);
   console.log("GITHUB API CALLS: ", userGhPort.apiCalls); // Show number of API calls used for this method
 });

@@ -23,6 +23,14 @@ Note: OAuth tokens should be treated as a password so use caution to not expose 
 
 ---
 
+### `GhPort.ghPortRepos()`
+
+This method returns a promise which will hold all ghport marked repos along with the contents of the ghport.md file.
+
+_Future implementation: Accept order parameter which tells `ghPortRepos` in which order to return the repos, recent to oldest or visa versa._
+
+---
+
 ### `GhPort.getAllRepos()`
 
 Returns an array of all repos associated with the GhPort instance username. Each repo will contain:
@@ -56,3 +64,5 @@ TODO:
 
 - Integrate a markdown parser
 - Implement a templating engine
+- Add proxy to show number of API calls to keep track when testing
+- handle parameter erros

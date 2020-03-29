@@ -32,7 +32,7 @@ class GhPort {
    * make cards, else return the entire raw response
    * Default: true
    */
-  getAllRepos(sort = "created", direction = "desc", formatted = true) {
+  getAllRepos(sort = "created", direction = "desc") {
     this.apiCalls++;
     return fetch(this.__buildQueryString(sort, direction), {
       headers: {
@@ -43,7 +43,7 @@ class GhPort {
     })
       .then(res => {
         return res.json().then(res => {
-          if (res.length > 0 && formatted) {
+          if (res.length > 0) {
             return this.__formatRawRepoList(res);
           } else if (res.length && !formatted) {
             return res;
@@ -64,10 +64,9 @@ class GhPort {
    *
    * @return {promise} The marked repos with ghport contents
    */
-  async ghRepos() {
+  async ghPortRepos() {
     let allRepos = await this.getAllRepos();
     let markedRepos = await this.getMarkedRepos(allRepos);
-    this.apiCalls += markedRepos.length;
 
     let reposContentPromises = markedRepos.map(async repo => {
       let content = await this.__getGhFileContents(repo.name);
@@ -98,6 +97,7 @@ class GhPort {
   }
 
   __getGhFileContents(repoName) {
+    this.apiCalls++;
     return this.__getGhPortFileContents(repoName)
       .then(data => {
         return data;
