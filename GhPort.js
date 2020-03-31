@@ -5,8 +5,6 @@ require("dotenv").config();
 // FUTURE: Implement the userauth API to allow editing posts right on your website
 // Limit
 
-// Make aware of environment client | node
-
 class GhPort {
   constructor(gh_userName, userToken) {
     // Create handle to error logging file
