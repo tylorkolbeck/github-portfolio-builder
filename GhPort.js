@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+const errorHandler = require("./logError.js");
 require("dotenv").config();
 
 // FUTURE: Implement the userauth API to allow editing posts right on your website
@@ -8,6 +9,24 @@ require("dotenv").config();
 
 class GhPort {
   constructor(gh_userName, userToken) {
+    // Create handle to error logging file
+    this.errorStreamHandle = errorHandler.createFileStreamHandle("log.txt");
+
+    // If not user name provided thow error
+    if (!gh_userName) {
+      throw new Error("You must supply a github user name to class GhPort");
+    }
+
+    // If not authorization token given log caution to log.txt
+    if (!userToken) {
+      errorHandler.writeToStream(
+        this.errorStreamHandle,
+        `CAUTION: You have not passed a GitHub personal access token.
+         Your API will be limited to 60 requests an hour which will
+         quikcly run out if you have a large number of marked repos.`
+      );
+    }
+
     this.gh_userName = gh_userName;
     this.user_token = userToken;
     this.requests_remaining = "";
@@ -40,7 +59,7 @@ class GhPort {
    * make cards, else return the entire raw response
    * Default: true
    */
-  getAllRepos(sort = "created", direction = "desc") {
+  getAllRepos(sort = "created", direction = "desc", formatted = true) {
     this.apiCalls++;
     return fetch(this.__buildQueryString(sort, direction), {
       headers: {
@@ -55,12 +74,21 @@ class GhPort {
 
         return res.json().then(res => {
           if (res.length > 0) {
-            return this.__formatRawRepoList(res);
-          } else if (res.length && !formatted) {
-            return res;
+            if (formatted) {
+              return this.__formatRawRepoList(res);
+            } else {
+              return res;
+            }
           } else {
-            return null;
+            return [];
           }
+          // if (res.length > 0) {
+          //   return this.__formatRawRepoList(res);
+          // } else if (res.length && !formatted) {
+          //   return res;
+          // } else {
+          //   return null;
+          // }
         });
       })
       .catch(err => err.message);
