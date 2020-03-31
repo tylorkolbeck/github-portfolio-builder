@@ -21,7 +21,7 @@ class GhPort {
         this.errorStreamHandle,
         `CAUTION: You have not passed a GitHub personal access token.
          Your API will be limited to 60 requests an hour which will
-         quikcly run out if you have a large number of marked repos.`
+         quickly run out if you have a large number of marked repos.`
       );
     }
 
