@@ -15,7 +15,9 @@ All you need to do is give each repo you wish to include in your portfolio a top
 ### `GhPort`
 
 Create a GhPort instance by passing it a github username string.
-Optionally pass in an GitHub OAUTH token.
+Optionally pass in an GitHub personal access token.
+
+Not passing a personal access token will limit requests to 60 per hour but if you authenticate that number is upped to 5,000.
 
 Note: OAuth tokens should be treated as a password so use caution to not expose it in a repo or on the client.
 
