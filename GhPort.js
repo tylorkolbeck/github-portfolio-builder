@@ -82,13 +82,6 @@ class GhPort {
           } else {
             return [];
           }
-          // if (res.length > 0) {
-          //   return this.__formatRawRepoList(res);
-          // } else if (res.length && !formatted) {
-          //   return res;
-          // } else {
-          //   return null;
-          // }
         });
       })
       .catch(err => err.message);
