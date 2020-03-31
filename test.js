@@ -2,17 +2,18 @@ const GhPort = require("./GhPort");
 const fs = require("fs");
 
 // Create instance of GhPort
-let userGhPort = new GhPort("tylorkolbeck", process.env.USER_TOKEN);
+// let userGhPort = new GhPort("tylorkolbeck", process.env.USER_TOKEN);
+let userGhPort = new GhPort("tylorkolbeck");
 
 /**
  *
  * @return marked repos which contain their ghport.md file contents
  */
-userGhPort.ghPortRepos().then(repos => {
-  console.log(">>>", userGhPort.requestsRemaining);
-  // console.log(repos);
-  // console.log("GITHUB API CALLS: ", userGhPort.apiCalls); // Show number of API calls used for this method
-});
+// userGhPort.ghPortRepos().then(repos => {
+// console.log(">>>", userGhPort.requestsRemaining);
+// console.log(repos);
+// console.log("GITHUB API CALLS: ", userGhPort.apiCalls); // Show number of API calls used for this method
+// });
 
 /**
  *
