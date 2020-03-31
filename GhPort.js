@@ -1,21 +1,29 @@
 const fetch = require("node-fetch");
 require("dotenv").config();
 
-let USER_TOKEN = process.env.USER_TOKEN;
-let USER_NAME = process.env.USER_NAME;
-
 // FUTURE: Implement the userauth API to allow editing posts right on your website
+// Limit
 
 // Make aware of environment client | node
 
 class GhPort {
-  constructor(gh_userName, userToken = "") {
+  constructor(gh_userName, userToken) {
     this.gh_userName = gh_userName;
     this.user_token = userToken;
+    this.requests_remaining = "";
   }
 
   baseURL = "https://api.github.com";
   apiCalls = 0;
+  user_token = "";
+
+  get requestsRemaining() {
+    return `Requests Remaing ${this.requests_remaining}`;
+  }
+
+  set requestsRemaining(value) {
+    this.requests_remaining = value;
+  }
 
   /**
    *
@@ -38,10 +46,13 @@ class GhPort {
       headers: {
         // to return topics
         Accept:
-          "application/vnd.github.mercy-preview+json+raw, application/vnd.github.v3.raw"
+          "application/vnd.github.mercy-preview+json+raw, application/vnd.github.v3.raw",
+        authorization: this.user_token ? `Bearer ${this.user_token}` : ""
       }
     })
       .then(res => {
+        this.requestsRemaining = res.headers.get("x-ratelimit-remaining");
+
         return res.json().then(res => {
           if (res.length > 0) {
             return this.__formatRawRepoList(res);
@@ -110,10 +121,12 @@ class GhPort {
 
     return fetch(queryParam, {
       headers: {
-        Accept: "application/vnd.github.v3.raw"
+        Accept: "application/vnd.github.v3.raw",
+        authorization: this.user_token ? `Bearer ${this.user_token}` : ""
       }
     })
       .then(res => {
+        this.requestsRemaining = res.headers.get("x-ratelimit-remaining");
         return res
           .text()
           .then(data => data)
