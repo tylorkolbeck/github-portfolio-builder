@@ -2,11 +2,16 @@ const fetch = require("node-fetch");
 const errorHandler = require("./logError.js");
 require("dotenv").config();
 
-// FUTURE: Implement the userauth API to allow editing posts right on your website
-// Limit
+// TODO: Cache responses from server and only fetch new data ever x minutes for testing
+// TODO: rename public methods
+
+// Public Functions:
+// reposWithContent - returns all marked repos along with the contents of the ghport.md file
+// reposWithDescription
+//
 
 class GhPort {
-  constructor(gh_userName, userToken) {
+  constructor(gh_userName, userToken, useCaching = false) {
     // Create handle to error logging file
     this.errorStreamHandle = errorHandler.createFileStreamHandle("log.txt");
 
@@ -25,6 +30,10 @@ class GhPort {
       );
     }
 
+    if (useCaching) {
+      this.cache_enabled = true;
+    }
+
     this.gh_userName = gh_userName;
     this.user_token = userToken;
     this.requests_remaining = "";
@@ -33,6 +42,9 @@ class GhPort {
   baseURL = "https://api.github.com";
   apiCalls = 0;
   user_token = "";
+  cache_enabled = false; // true || false set on initilization set by user
+  cache_data = null; // store returned data here in an object to reference later
+  last_fetch_time = null; // record the last time data was fetched with the github API
 
   get requestsRemaining() {
     return `Requests Remaing ${this.requests_remaining}`;
@@ -43,7 +55,7 @@ class GhPort {
   }
 
   /**
-   *
+   * Gets all repos associated with the github username
    * @param {string} sort
    * sort the returned repos by create | pushed | updated
    * Default: created
@@ -57,7 +69,7 @@ class GhPort {
    * make cards, else return the entire raw response
    * Default: true
    */
-  getAllRepos(sort = "created", direction = "desc", formatted = true) {
+  __getAllRepos(sort = "created", direction = "desc", formatted = true) {
     this.apiCalls++;
     return fetch(this.__buildQueryString(sort, direction), {
       headers: {
@@ -73,7 +85,7 @@ class GhPort {
         return res.json().then(res => {
           if (res.length > 0) {
             if (formatted) {
-              return this.__formatRawRepoList(res);
+              return this.__buildRepoReturnData(res);
             } else {
               return res;
             }
@@ -94,9 +106,9 @@ class GhPort {
    *
    * @return {promise} The marked repos with ghport contents
    */
-  async ghPortRepos() {
-    let allRepos = await this.getAllRepos();
-    let markedRepos = await this.getMarkedRepos(allRepos);
+  async reposWithContent() {
+    let allRepos = await this.__getAllRepos();
+    let markedRepos = await this.__filterMarkedRepos(allRepos);
 
     let reposContentPromises = markedRepos.map(async repo => {
       let content = await this.__getGhFileContents(repo.name);
@@ -113,12 +125,24 @@ class GhPort {
   }
 
   /**
+   * gets all repos then filters out the ones that are marked
+   * with ghport topic and returns them in an array.
+   * @returns {array}   marked repos
+   */
+  reposDescription() {
+    this.__getAllRepos().then(repos => {
+      let filteredRepos = this.__filterMarkedRepos(repos);
+      console.log(filteredRepos);
+    });
+  }
+
+  /**
    *
    * Determine which repos are marked and return those
    * @param  {array} repos
    * @return {array}          Array of marked repos(no ghport content)
    */
-  getMarkedRepos(repos) {
+  __filterMarkedRepos(repos) {
     let marked_repos = repos.filter(repo => {
       return repo.topics.includes("ghport");
     });
@@ -128,14 +152,20 @@ class GhPort {
 
   __getGhFileContents(repoName) {
     this.apiCalls++;
-    return this.__getGhPortFileContents(repoName)
+    return this.__getThisReposContent(repoName)
       .then(data => {
         return data;
       })
       .catch(err => console.log(err));
   }
 
-  __getGhPortFileContents(repoName) {
+  /**
+   *
+   * GETS SPECIFIC REPOS CONTENTS
+   * @param {string} repoName
+   *
+   */
+  __getThisReposContent(repoName) {
     let queryParam = `${this.baseURL}/repos/${this.gh_userName}/${repoName}/contents/ghport.md`;
 
     return fetch(queryParam, {
@@ -160,7 +190,7 @@ class GhPort {
     }${direction ? `direction=${direction}` : `direction=desc`}`;
   }
 
-  __formatRawRepoList(reposRaw) {
+  __buildRepoReturnData(reposRaw) {
     return reposRaw.map(repo => {
       return {
         id: repo.id,
