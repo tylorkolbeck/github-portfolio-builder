@@ -20,7 +20,7 @@ All you need to do is give each repo you wish to include in your portfolio a top
 
 ## To Run
 
-Initialize a GhPort object running on a server. This app is served using an express server.
+Initialize a GhPort instance running on a server. This app is served using an express server.
 
 ```
 const express = require("express");
