@@ -6,8 +6,8 @@ require("dotenv").config();
 // TODO: rename public methods
 
 // Public Functions:
-// reposWithContent - returns all marked repos along with the contents of the ghport.md file
-// reposWithDescription
+// reposContent - returns all marked repos along with the contents of the ghport.md file
+// reposDescription
 //
 
 class GhPort {
@@ -46,6 +46,7 @@ class GhPort {
   cache_data = null; // store returned data here in an object to reference later
   last_fetch_time = null; // record the last time data was fetched with the github API
 
+  // FOR TESTING ADD ACTUAL GITHUB API CALL TO GET REMAINING API REQUESTS
   get requestsRemaining() {
     return `Requests Remaing ${this.requests_remaining}`;
   }
@@ -130,9 +131,9 @@ class GhPort {
    * @returns {array}   marked repos
    */
   reposDescription() {
-    this.__getAllRepos().then(repos => {
+    return this.__getAllRepos().then(repos => {
       let filteredRepos = this.__filterMarkedRepos(repos);
-      console.log(filteredRepos);
+      return filteredRepos;
     });
   }
 
