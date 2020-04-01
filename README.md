@@ -99,15 +99,15 @@ Returns an array of all repos associated with the GhPort instance username. Each
 
 Use this returned data to build card elements that show a description and link to the main content of the work.
 
-Note:
-`GhPort.getAllRepos()` does not only return ghport marked files or the contents of a ghport.md file if it exists. See `GhPort.buildMarkedRepos()` and `GhPort.getMarkedRepos()` for getting repos that are marked with ghport and that contain a ghport.md file.
-
 ---
 
 ### `GhPort.__getGhFileContents()`
 
 Note:
 Each repo passed to `__getGhFileContents()` will make an API call which could quickly max out API calls. Only call this method with an array of marked repos.
+
+Note:
+`GhPort.__getGhFileContents()` does not only return ghport marked files or the contents of a ghport.md file if it exists. See `GhPort.reposDescription()` for getting repos that are marked with ghport and that contain a ghport.md file. You will quickly max out your requests if you are passing every user git hub repo to this method.
 
 TODO:
 
