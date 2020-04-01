@@ -5,6 +5,8 @@ const fs = require("fs");
 // let userGhPort = new GhPort("tylorkolbeck", process.env.USER_TOKEN);
 let userGhPort = new GhPort("tylorkolbeck");
 
+userGhPort.reposDescription();
+
 /**
  *
  * @return marked repos which contain their ghport.md file contents
@@ -38,8 +40,7 @@ function writeToFile(filename, data) {
  * @returns {array} of all repos marked or unmarked
  * getAllRepos([filter[, order[, formatted]]])
  */
-//  userGhPort.getAllRepos()
-//  .then(repos => console.log(repos))
+// userGhPort.getAllRepos().then(repos => console.log(repos));
 
 /**
  * @returns {array} of repos marked with the topic ghport
