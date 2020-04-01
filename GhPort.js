@@ -11,7 +11,7 @@ require("dotenv").config();
 //
 
 class GhPort {
-  constructor(gh_userName, userToken, useCaching = false) {
+  constructor(gh_userName, settings) {
     // Create handle to error logging file
     this.errorStreamHandle = errorHandler.createFileStreamHandle("log.txt");
 
@@ -21,7 +21,7 @@ class GhPort {
     }
 
     // If not authorization token given log caution to log.txt
-    if (!userToken) {
+    if (!settings.userToken) {
       errorHandler.writeToStream(
         this.errorStreamHandle,
         `CAUTION: You have not passed a GitHub personal access token.
@@ -30,12 +30,12 @@ class GhPort {
       );
     }
 
-    if (useCaching) {
+    if (settings.cache) {
       this.cache_enabled = true;
     }
 
     this.gh_userName = gh_userName;
-    this.user_token = userToken;
+    this.user_token = settings.token;
     this.requests_remaining = "";
   }
 
