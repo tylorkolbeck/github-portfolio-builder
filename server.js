@@ -2,17 +2,23 @@ const express = require("express");
 const GhPort = require("./GhPort.js");
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT;
 
-let ghport = new GhPort("tylorkolbeck", process.env.USER_TOKEN);
+let ghportSettings = {
+  format: "raw",
+  cache: false,
+  token: process.env.USER_TOKEN
+};
+
+let ghport = new GhPort("tylorkolbeck", ghportSettings);
 
 // Get marked repos with descriptions
-app.get("/reposDesc", (req, res) => {
+app.get("/desc", (req, res) => {
   ghport.reposDescription().then(repos => res.send(repos));
 });
 
 // Get marked repos with their contents
-app.get("/reposContent", (req, res) => {
+app.get("/content", (req, res) => {
   ghport.reposWithContent().then(repos => res.send(repos));
 });
 
