@@ -53,6 +53,59 @@ app.listen(port, () => {
 });
 ```
 
+## Endpoints
+
+`localhost:{port}/desc`
+
+Returns each repo marked with ghport topic. Contains repo info but does not contain the ghport.md file contents.
+
+```
+[
+  {
+    "id": {num},
+    "name": {string}",
+    "url": {string}",
+    "description": {string},
+    "commits": {num} - not implemented yet. For now will return 0,
+    "sshUrl": {string},
+    "stars": {num},
+    "created": {ISO yyyy-mm-ddT00:00:00.000Z},
+    "updated": {ISO datyyyy-mm-ddT00:00:00.000Ze},
+    "hasPages": {bool} has a deployed git hub page,
+    "hasIssues": {bool} has open issues,
+    "topics": [ {array} topics
+      "ghport" {string}
+    ]
+  }
+]
+```
+
+`localhost:{port}/content`
+
+Returns each repo marked with ghport topic with its ghport.md file contents.
+
+```
+[
+  {
+    "id": {num},
+    "name": {string}",
+    "url": {string}",
+    "description": {string},
+    "commits": {num} - not implemented yet. For now will return 0,
+    "sshUrl": {string},
+    "stars": {num},
+    "created": {ISO yyyy-mm-ddT00:00:00.000Z},
+    "updated": {ISO datyyyy-mm-ddT00:00:00.000Ze},
+    "hasPages": {bool} has a deployed git hub page,
+    "hasIssues": {bool} has open issues,
+    "topics": [ {array} topics
+      "ghport" {string}
+    ],
+    "content" : {string}
+  }
+]
+```
+
 ## Error Logs
 
 View error logs in the log.txt file.
