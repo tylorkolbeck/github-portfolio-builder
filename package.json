@@ -4,7 +4,8 @@
   "description": "This project is designed to get a users github repositories that are marked with a \"\\*\" in the description and then build cards to display on their website. What to display on the website will be formatted in markdown in a .gh-portfolio.md file in the repo.",
   "main": "main.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "node test.js",
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -21,5 +22,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
   }
 }
