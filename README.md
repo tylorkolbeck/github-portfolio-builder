@@ -4,6 +4,14 @@ Tylor Kolbeck | 26 March, 2020 | 1.0.0-beta
 
 ## THIS IS STILL A WORK IN PROGRESS
 
+## Future Implementations
+
+Add a templating library to allow returning prebuilt cards and repo content pages.
+
+---
+
+## Description
+
 An app wrapped around the Github API which is used to easily create portfolio cards and portfolio pages on your website. GhPort fetchs a users repos that are marked with a "ghport" topic. Each ghport repo should contain a ghport.md file with its contents written in markdown which can then be easily displayed on a website.
 
 We take care of finding the repos and building the cards and pages so that if you are not a web developer you can easily create a portfolio web site of all your work that you wish to share from github.
