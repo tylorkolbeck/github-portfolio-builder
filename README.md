@@ -10,6 +10,53 @@ We take care of finding the repos and building the cards and pages so that if yo
 
 All you need to do is give each repo you wish to include in your portfolio a topic of "ghport" and include a ghport.md file.
 
+## To Run
+
+Initialize a GhPort object running on a server. This app is served using an express server.
+
+```
+const express = require("express");
+const GhPort = require("./GhPort.js");
+
+const app = express();
+const port = process.env.PORT;
+
+let ghportSettings = {
+  format: "raw",
+  cache: false,
+  token: process.env.USER_TOKEN
+};
+
+let ghport = new GhPort("tylorkolbeck", ghportSettings);
+
+```
+
+You can use the built in endpoints for retreiving your github data or create custom ones with the GhPort methods.
+
+```
+// Get marked repos with descriptions
+app.get("/desc", (req, res) => {
+  ghport.reposDescription().then(repos => res.send(repos));
+});
+
+// Get marked repos with their contents
+app.get("/content", (req, res) => {
+  ghport.reposWithContent().then(repos => res.send(repos));
+});
+
+app.get("/req_remaining", (req, res) => {
+  res.send(ghport.requestsRemaining);
+});
+
+app.listen(port, () => {
+  console.log(`GhPort running on port ${port}`);
+});
+```
+
+## Error Logs
+
+View error logs in the log.txt file.
+
 ## Base Class
 
 ### `GhPort`
@@ -21,11 +68,11 @@ Not passing a personal access token will limit requests to 60 per hour but if yo
 
 Note: OAuth tokens should be treated as a password so use caution to not expose it in a repo or on the client.
 
-## Pubilic Methods
+## Methods
 
 ---
 
-### `GhPort.ghPortRepos()`
+### `GhPort.reposContent()`
 
 This method returns a promise which will hold all ghport marked repos along with the contents of the ghport.md file.
 
@@ -33,7 +80,7 @@ _Future implementation: Accept order parameter which tells `ghPortRepos` in whic
 
 ---
 
-### `GhPort.getAllRepos()`
+### `GhPort.reposDescription()`
 
 Returns an array of all repos associated with the GhPort instance username. Each repo will contain:
 
@@ -50,17 +97,17 @@ Returns an array of all repos associated with the GhPort instance username. Each
 - if it has issues - hasIssues
 - associated topics - topics
 
+Use this returned data to build card elements that show a description and link to the main content of the work.
+
 Note:
 `GhPort.getAllRepos()` does not only return ghport marked files or the contents of a ghport.md file if it exists. See `GhPort.buildMarkedRepos()` and `GhPort.getMarkedRepos()` for getting repos that are marked with ghport and that contain a ghport.md file.
 
-_`GhPort.getAllRepos()` may be deprecated in a future release so avoid using it to avoid misuse._
-
 ---
 
-### `GhPort.buildMarkedRepos()`
+### `GhPort.__getGhFileContents()`
 
 Note:
-Each repo passed to `buildMarkedRepos()` will make an API call which could quickly max out API calls. Only call this method with an array of marked repos. Marked repos will contain a ghport topic see `getMarkedRepos()`.
+Each repo passed to `__getGhFileContents()` will make an API call which could quickly max out API calls. Only call this method with an array of marked repos.
 
 TODO:
 
