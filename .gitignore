@@ -2,3 +2,5 @@
 reposFormatted.json
 log.txt
 /node_modules
+
+/logs/logs.txt

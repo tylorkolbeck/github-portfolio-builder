@@ -2,6 +2,7 @@ const express = require("express")
 const GhPort = require("./GhPort.js")
 const axios = require("axios")
 const cheerio = require("cheerio")
+const fs = require("fs")
 
 const app = express()
 const port = process.env.PORT
@@ -29,8 +30,9 @@ app.get("/req_remaining", (req, res) => {
 })
 
 app.get("/state_data", async (req, res) => {
+  let writeString = `${Date.now()} \n`
   const data = await getHtml()
-  console.log(data)
+  fs.writeFile("./logs/logs.txt", writeString, (err) => console.log(err))
   res.send(data)
 })
 
