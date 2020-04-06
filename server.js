@@ -60,7 +60,7 @@ async function getHtml() {
       stateArray.forEach((el, i) => {
         finalArray.push({
           state: el,
-          deaths: deathsArray[i],
+          cases: deathsArray[i],
         })
       })
     })
