@@ -51,10 +51,14 @@ async function getHtml() {
       let stateColumn = tableData.find("tr > td:first-of-type")
       let casesColumn = tableData.find("tr > td:nth-of-type(2)")
       let deathColumn = tableData.find("tr > td:nth-of-type(4)")
+      let activeCasesColumn = tableData.find("tr > td:nth-of-type(6)")
+      let testsColumn = tableData.find("tr > td:nth-of-type(9)")
 
       let stateArray = stateColumn.text().split("\n")
       let casesArray = []
       let deathsArray = []
+      let activeCasesArray = []
+      let testsArray = []
 
       casesColumn.each((i, elem) => {
         casesArray.push($(elem).text())
@@ -64,11 +68,21 @@ async function getHtml() {
         deathsArray.push($(elem).text())
       })
 
+      activeCasesColumn.each((i, elem) => {
+        activeCasesArray.push($(elem).text())
+      })
+
+      testsColumn.each((el, elem) => {
+        testsArray.push($(elem).text())
+      })
+
       stateArray.forEach((el, i) => {
         finalArray.push({
           state: el.trim(),
           cases: casesArray[i].trim(),
           deaths: deathsArray[i].replace("\n", "").trim(),
+          activeCases: activeCasesArray[i].trim(),
+          tests: testsArray[i].replace("\n", "").trim(),
         })
       })
     })
