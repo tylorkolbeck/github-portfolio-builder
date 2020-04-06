@@ -49,18 +49,26 @@ async function getHtml() {
       const tableData = $("#usa_table_countries_today tbody:first-of-type")
 
       let stateColumn = tableData.find("tr > td:first-of-type")
-      let deathColumn = tableData.find("tr > td:nth-of-type(2)")
+      let casesColumn = tableData.find("tr > td:nth-of-type(2)")
+      let deathColumn = tableData.find("tr > td:nth-of-type(4)")
 
       let stateArray = stateColumn.text().split("\n")
+      let casesArray = []
       let deathsArray = []
+
+      casesColumn.each((i, elem) => {
+        casesArray.push($(elem).text())
+      })
+
       deathColumn.each((i, elem) => {
         deathsArray.push($(elem).text())
       })
 
       stateArray.forEach((el, i) => {
         finalArray.push({
-          state: el,
-          cases: deathsArray[i],
+          state: el.trim(),
+          cases: casesArray[i].trim(),
+          deaths: deathsArray[i].replace("\n", "").trim(),
         })
       })
     })
