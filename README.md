@@ -1,3 +1,8 @@
+##TODO:
+
+- remove future implementations from description
+- describe what the settings in GhPort settings object do and all options
+
 # GitHub Portfolio Builder
 
 Tylor Kolbeck | 26 March, 2020 | 1.0.0-beta
